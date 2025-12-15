@@ -1,10 +1,14 @@
 import { Router } from "express";
-import { getMe, updateMe } from "../controllers/user.controller";
+import { getMe, updateMe, getUsers } from "../controllers/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/me", authMiddleware, getMe);
-router.put("/me", authMiddleware, updateMe);
+// All routes require authentication
+router.use(authMiddleware);
+
+router.get("/me", getMe);
+router.put("/me", updateMe);
+router.get("/", getUsers);
 
 export default router;

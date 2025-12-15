@@ -1,23 +1,61 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import * as z from "zod";
 import { RegisterDto, LoginDto } from "../dtos/auth.dto";
 import { registerUser, loginUser } from "../services/auth.service";
+import { ApiResponse } from "../utils/ApiResponse";
+import { ApiError } from "../utils/ApiError";
+import { asyncHandler } from "../utils/asyncHandler";
 
-export const register = async (req: Request, res: Response) => {
-  try {
-    const data = RegisterDto.parse(req.body);
-    const user = await registerUser(data);
-    res.status(201).json(user);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
-  }
+const formatZodErrors = (error: z.ZodError) => {
+  return error.issues.map((issue) => ({
+    field: issue.path.join("."),
+    message: issue.message,
+  }));
 };
 
-export const login = async (req: Request, res: Response) => {
-  try {
-    const data = LoginDto.parse(req.body);
-    const result = await loginUser(data);
-    res.status(200).json(result);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
+export const register = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = RegisterDto.parse(req.body);
+      const user = await registerUser(data);
+      
+      return ApiResponse.created(res, {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      }, "User registered successfully");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return ApiResponse.badRequest(res, "Validation failed", formatZodErrors(error));
+      }
+      next(error);
+    }
   }
-};
+);
+
+export const login = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = LoginDto.parse(req.body);
+      const result = await loginUser(data);
+      
+      return ApiResponse.success(res, {
+        token: result.token,
+        user: {
+          id: result.user._id,
+          name: result.user.name,
+          email: result.user.email,
+        },
+      }, "Login successful");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return ApiResponse.badRequest(res, "Validation failed", formatZodErrors(error));
+      }
+      if (error instanceof ApiError) {
+        next(error);
+        return;
+      }
+      next(error);
+    }
+  }
+);
