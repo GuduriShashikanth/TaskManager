@@ -36,7 +36,7 @@ export const authMiddleware = (
       throw ApiError.unauthorized("Token is missing");
     }
 
-    const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
+    const decoded = jwt.verify(token, config.jwtSecret) as unknown as JwtPayload;
 
     req.userId = decoded.userId;
     req.userRole = decoded.role;

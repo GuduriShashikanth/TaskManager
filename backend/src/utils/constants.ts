@@ -19,13 +19,15 @@ export const USER_ROLES = {
 export const TASK_STATUS = {
   TODO: "todo",
   IN_PROGRESS: "in_progress",
-  DONE: "done",
+  REVIEW: "review",
+  COMPLETED: "completed",
 } as const;
 
 export const TASK_PRIORITY = {
   LOW: "low",
   MEDIUM: "medium",
   HIGH: "high",
+  URGENT: "urgent",
 } as const;
 
 export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
