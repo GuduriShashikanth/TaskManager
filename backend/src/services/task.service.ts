@@ -8,6 +8,7 @@ import {
   updateTaskRepo,
 } from "../repositories/task.repository";
 import { TASK_PRIORITY, TASK_STATUS } from "../utils/constants";
+import { emitTaskUpdated, emitTaskAssigned } from "../sockets/socket.service";
 
 /**
  * Normalize priority to PDF-required enum values
@@ -74,12 +75,15 @@ export const createTask = async (userId: string, data: any) => {
 
 /**
  * Update an existing task
+ * Only creator or assignee is allowed
+ * Emits socket events
  */
 export const updateTask = async (taskId: string, userId: string, data: any) => {
   const task = await findTaskByIdRepo(taskId);
-  if (!task) throw ApiError.notFound("Task not found");
+  if (!task) {
+    throw ApiError.notFound("Task not found");
+  }
 
-  // Only creator or assignee can update
   if (
     task.creatorId.toString() !== userId &&
     task.assignedToId.toString() !== userId
@@ -95,14 +99,37 @@ export const updateTask = async (taskId: string, userId: string, data: any) => {
   if (data.priority) updateData.priority = normalizePriority(data.priority);
   if (data.status) updateData.status = normalizeStatus(data.status);
 
+  let assigneeChanged = false;
+
   if (data.assignedToId) {
     if (!Types.ObjectId.isValid(data.assignedToId)) {
       throw ApiError.badRequest("Invalid assignedToId");
     }
+
+    if (data.assignedToId !== task.assignedToId.toString()) {
+      assigneeChanged = true;
+    }
+
     updateData.assignedToId = new Types.ObjectId(data.assignedToId);
   }
 
-  return updateTaskRepo(taskId, updateData);
+  const updatedTask = await updateTaskRepo(taskId, updateData);
+  if (!updatedTask) {
+    throw ApiError.notFound("Failed to update task");
+  }
+
+  // 🔔 broadcast task update
+  emitTaskUpdated(updatedTask);
+
+  // 🔔 notify new assignee
+  if (assigneeChanged) {
+    emitTaskAssigned(data.assignedToId, {
+      message: "You have been assigned a new task",
+      taskId: updatedTask._id,
+    });
+  }
+
+  return updatedTask;
 };
 
 /**
@@ -110,7 +137,9 @@ export const updateTask = async (taskId: string, userId: string, data: any) => {
  */
 export const deleteTask = async (taskId: string, userId: string) => {
   const task = await findTaskByIdRepo(taskId);
-  if (!task) throw ApiError.notFound("Task not found");
+  if (!task) {
+    throw ApiError.notFound("Task not found");
+  }
 
   if (task.creatorId.toString() !== userId) {
     throw ApiError.forbidden("Only creator can delete task");

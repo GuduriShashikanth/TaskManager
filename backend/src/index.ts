@@ -8,6 +8,9 @@ import { errorHandler, notFoundHandler } from "./middlewares";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import taskRoutes from "./routes/task.routes";
+import notificationRoutes from "./routes/notification.routes";
+import { setupSocket } from "./sockets/socket";
+import { initSocketService } from "./sockets/socket.service";
 
 // Validate environment variables
 validateEnv();
@@ -48,6 +51,7 @@ app.get("/health", (_req, res) => {
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // 404 Handler
 app.use(notFoundHandler);
@@ -63,6 +67,8 @@ io.on("connection", (socket) => {
     console.log(`User disconnected: ${socket.id}`);
   });
 });
+setupSocket(io);
+initSocketService(io);
 
 // Start server
 const startServer = async (): Promise<void> => {
