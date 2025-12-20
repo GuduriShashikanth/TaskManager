@@ -17,12 +17,16 @@ export const register = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = RegisterDto.parse(req.body);
-      const user = await registerUser(data);
+      const { user, token } = await registerUser(data);
       
       return ApiResponse.created(res, {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
       }, "User registered successfully");
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -42,9 +46,10 @@ export const login = asyncHandler(
       return ApiResponse.success(res, {
         token: result.token,
         user: {
-          id: result.user._id,
+          _id: result.user._id,
           name: result.user.name,
           email: result.user.email,
+          role: result.user.role,
         },
       }, "Login successful");
     } catch (error) {

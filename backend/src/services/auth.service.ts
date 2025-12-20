@@ -21,7 +21,11 @@ export const registerUser = async (data: RegisterInput) => {
     password: hashedPassword,
   });
 
-  return user;
+  const token = jwt.sign({ userId: user._id }, config.jwtSecret, {
+    expiresIn: config.jwtExpiresIn as jwt.SignOptions["expiresIn"],
+  });
+
+  return { user, token };
 };
 
 export const loginUser = async (data: LoginInput) => {

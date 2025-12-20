@@ -37,6 +37,7 @@ const normalizeStatus = (status?: string) => {
 
   const map: Record<string, string> = {
     todo: TASK_STATUS.TODO,
+    in_progress: TASK_STATUS.IN_PROGRESS,
     "in progress": TASK_STATUS.IN_PROGRESS,
     review: TASK_STATUS.REVIEW,
     completed: TASK_STATUS.COMPLETED,

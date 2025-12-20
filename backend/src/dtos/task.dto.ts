@@ -4,7 +4,7 @@ import { TASK_PRIORITY, TASK_STATUS } from "../utils/constants";
 export const CreateTaskDto = z.object({
   title: z.string().min(1).max(100),
   description: z.string().optional(),
-  dueDate: z.string().datetime(),
+  dueDate: z.string(),
   priority: z.enum(Object.values(TASK_PRIORITY) as [string, ...string[]]),
   assignedToId: z.string(),
 });
@@ -12,7 +12,7 @@ export const CreateTaskDto = z.object({
 export const UpdateTaskDto = z.object({
   title: z.string().min(1).max(100).optional(),
   description: z.string().optional(),
-  dueDate: z.string().datetime().optional(),
+  dueDate: z.string().optional(),
   priority: z.enum(Object.values(TASK_PRIORITY) as [string, ...string[]]).optional(),
   status: z.enum(Object.values(TASK_STATUS) as [string, ...string[]]).optional(),
   assignedToId: z.string().optional(),
