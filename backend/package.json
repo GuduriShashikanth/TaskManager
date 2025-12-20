@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
+    "build": "npm install --include=dev && tsc",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit"
   },
@@ -13,11 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.0.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -25,13 +20,18 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
     "socket.io": "^4.8.1",
-    "typescript": "^5.7.0",
     "zod": "^4.2.0"
   },
   "devDependencies": {
-    "ts-node-dev": "^2.0.0"
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.0"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   }
 }
