@@ -11,12 +11,15 @@ interface User {
   role: "admin" | "member";
 }
 
+type TaskStatus = "todo" | "in_progress" | "review" | "completed";
+type TaskPriority = "low" | "medium" | "high" | "urgent";
+
 interface Task {
   _id: string;
   title: string;
   description: string;
-  status: "todo" | "in_progress" | "review" | "completed";
-  priority: "low" | "medium" | "high" | "urgent";
+  status: TaskStatus;
+  priority: TaskPriority;
   dueDate: string;
   creatorId: string | User;
   assignedToId: string | User;
@@ -48,8 +51,8 @@ const priorityOptions = [
 export function TaskForm({ task, onSubmit, onCancel, isLoading }: TaskFormProps) {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
-  const [status, setStatus] = useState(task?.status || "todo");
-  const [priority, setPriority] = useState(task?.priority || "medium");
+  const [status, setStatus] = useState<TaskStatus>(task?.status || "todo");
+  const [priority, setPriority] = useState<TaskPriority>(task?.priority || "medium");
   const [dueDate, setDueDate] = useState(task?.dueDate?.split("T")[0] || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]);
   const [assignedToId, setAssignedToId] = useState(typeof task?.assignedToId === "object" ? task.assignedToId._id : task?.assignedToId || "");
   const [users, setUsers] = useState<User[]>([]);
@@ -60,7 +63,7 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading }: TaskFormProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, description, status: status as Task["status"], priority: priority as Task["priority"], dueDate, assignedToId });
+    onSubmit({ title, description, status, priority, dueDate, assignedToId });
   };
 
   return (
@@ -76,8 +79,8 @@ export function TaskForm({ task, onSubmit, onCancel, isLoading }: TaskFormProps)
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Select label="Status" value={status} onChange={(e) => setStatus(e.target.value)} options={statusOptions} />
-        <Select label="Priority" value={priority} onChange={(e) => setPriority(e.target.value)} options={priorityOptions} />
+        <Select label="Status" value={status} onChange={(e) => setStatus(e.target.value as TaskStatus)} options={statusOptions} />
+        <Select label="Priority" value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)} options={priorityOptions} />
       </div>
       <Input label="Due Date" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
       <Select
