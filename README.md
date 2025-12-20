@@ -1,59 +1,77 @@
 # Collaborative Task Manager
 
-A full-stack real-time collaborative task management application built with React, Node.js, Express, MongoDB, and Socket.io.
+A full-stack real-time task management application built with React, Node.js, Express, MongoDB, and Socket.io.
+
+## Live Demo
+
+- **Frontend**: https://task-manager-beta-seven-73.vercel.app/
+- **Backend API**: https://taskmanager-ddip.onrender.com
 
 ## Features
 
-### Authentication
-- User registration and login with JWT
-- Secure password hashing with bcrypt
-- Protected routes with middleware
+### Core Requirements ✅
 
-### Task Management
-- Create, read, update, and delete tasks
-- Task properties: title, description, status, priority, due date, assignee
-- Status options: Todo, In Progress, Review, Completed
-- Priority levels: Low, Medium, High, Urgent
-- Drag-and-drop Kanban board for status changes
-- List view with sorting and filtering
+- [x] **User Authentication** - JWT-based registration and login
+- [x] **Task CRUD Operations** - Create, read, update, and delete tasks
+- [x] **Real-time Collaboration** - Socket.io for live updates across clients
+- [x] **Dashboard** - Task statistics, filtering, and sorting
 
-### Real-time Collaboration
-- Socket.io for real-time updates
-- Live task updates across all connected clients
-- Real-time notifications when tasks are assigned
-- Notification bell with unread count
+### Technical Implementation ✅
 
-### Dashboard
-- Task statistics (total, todo, in progress, completed)
-- Filter by status and priority
-- Sort by due date
-- Responsive design for mobile and desktop
+- [x] **Frontend**: React 19 + Vite + TypeScript + Tailwind CSS v4
+- [x] **Backend**: Node.js + Express 5 + TypeScript
+- [x] **Database**: MongoDB with Mongoose ODM
+- [x] **Real-time**: Socket.io for WebSocket communication
+- [x] **Authentication**: JWT tokens with secure password hashing (bcrypt)
+- [x] **Validation**: Zod v4 for request validation
+
+### Features Implemented ✅
+
+- [x] User registration and login
+- [x] Task creation with title, description, status, priority, due date, assignee
+- [x] Task status: Todo, In Progress, Review, Completed
+- [x] Task priority: Low, Medium, High, Urgent
+- [x] Kanban board view with drag-and-drop status changes
+- [x] List view with sortable columns
+- [x] Task filtering by status and priority
+- [x] Sorting by due date (ascending/descending)
+- [x] Real-time task updates via Socket.io
+- [x] Real-time notifications when tasks are assigned
+- [x] Notification bell with unread count
+- [x] Responsive design for mobile and desktop
+- [x] Error handling with proper HTTP status codes
 
 ## Tech Stack
 
-### Frontend
-- React 19 with TypeScript
-- Vite for build tooling
-- Tailwind CSS for styling
-- Socket.io-client for real-time updates
-- Axios for HTTP requests
-
-### Backend
-- Node.js with Express 5
-- TypeScript
-- MongoDB with Mongoose
-- Socket.io for WebSocket connections
-- JWT for authentication
-- Zod for validation
-- bcrypt for password hashing
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 19, Vite, TypeScript, Tailwind CSS v4 |
+| Backend | Node.js, Express 5, TypeScript |
+| Database | MongoDB, Mongoose |
+| Real-time | Socket.io |
+| Auth | JWT, bcrypt |
+| Validation | Zod v4 |
+| Deployment | Vercel (Frontend), Render (Backend) |
 
 ## Project Structure
 
 ```
-├── backend/
+├── frontend/                # React frontend
 │   ├── src/
-│   │   ├── config/          # Environment configuration
-│   │   ├── controllers/     # Route handlers
+│   │   ├── components/      # UI components
+│   │   │   ├── layout/      # Layout components (Navbar, Layout)
+│   │   │   ├── notifications/ # NotificationBell
+│   │   │   ├── tasks/       # Task components (TaskCard, TaskForm, KanbanBoard)
+│   │   │   └── ui/          # Reusable UI (Button, Input, Modal, Select)
+│   │   ├── context/         # React context (AuthContext)
+│   │   ├── lib/             # API and socket utilities
+│   │   ├── pages/           # Page components (Login, Register, Dashboard)
+│   │   └── types/           # TypeScript types
+│   └── ...
+├── backend/                 # Express backend
+│   ├── src/
+│   │   ├── config/          # Configuration
+│   │   ├── controllers/     # Route controllers
 │   │   ├── dtos/            # Data transfer objects (Zod schemas)
 │   │   ├── middlewares/     # Express middlewares
 │   │   ├── models/          # Mongoose models
@@ -61,75 +79,9 @@ A full-stack real-time collaborative task management application built with Reac
 │   │   ├── routes/          # API routes
 │   │   ├── services/        # Business logic
 │   │   ├── sockets/         # Socket.io handlers
-│   │   ├── utils/           # Utilities and helpers
-│   │   └── index.ts         # Entry point
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   ├── context/         # React context providers
-│   │   ├── lib/             # API and socket utilities
-│   │   ├── pages/           # Page components
-│   │   ├── App.tsx          # Main app component
-│   │   └── main.tsx         # Entry point
-│   └── package.json
+│   │   └── utils/           # Utilities (ApiResponse, ApiError, etc.)
+│   └── ...
 └── README.md
-```
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
-
-### Backend Setup
-
-1. Navigate to backend directory:
-```bash
-cd backend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create `.env` file:
-```env
-PORT=5000
-NODE_ENV=development
-MONGO_URI=mongodb://localhost:27017/taskmanager
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRES_IN=7d
-CORS_ORIGIN=http://localhost:5173
-```
-
-4. Start development server:
-```bash
-npm run dev
-```
-
-### Frontend Setup
-
-1. Navigate to frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create `.env` file:
-```env
-VITE_API_URL=http://localhost:5000
-VITE_SOCKET_URL=http://localhost:5000
-```
-
-4. Start development server:
-```bash
-npm run dev
 ```
 
 ## API Endpoints
@@ -139,57 +91,95 @@ npm run dev
 - `POST /api/auth/login` - Login user
 
 ### Users
-- `GET /api/users/me` - Get current user profile
-- `PUT /api/users/me` - Update profile
 - `GET /api/users` - Get all users
+- `GET /api/users/me` - Get current user
 
 ### Tasks
-- `GET /api/tasks` - List tasks (with filters)
+- `GET /api/tasks` - Get all tasks (with filters)
 - `POST /api/tasks` - Create task
+- `GET /api/tasks/:id` - Get task by ID
 - `PUT /api/tasks/:id` - Update task
 - `DELETE /api/tasks/:id` - Delete task
 
 ### Notifications
 - `GET /api/notifications` - Get user notifications
-- `PATCH /api/notifications/:id/read` - Mark as read
+- `PATCH /api/notifications/:id/read` - Mark notification as read
 
-## Socket Events
+## Socket.io Events
 
-### Client to Server
-- `register` - Register user socket connection
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| `register` | Client → Server | Register user for notifications |
+| `taskCreated` | Server → Client | New task created |
+| `taskUpdated` | Server → Client | Task updated |
+| `taskDeleted` | Server → Client | Task deleted |
+| `taskAssigned` | Server → Client | Task assigned to user |
 
-### Server to Client
-- `taskCreated` - New task created
-- `taskUpdated` - Task updated
-- `taskDeleted` - Task deleted
-- `taskAssigned` - Task assigned to user
+## Local Development
 
-## Scripts
+### Prerequisites
+- Node.js 20.x
+- MongoDB instance
+- npm or yarn
 
-### Backend
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run typecheck` - Run TypeScript check
+### Backend Setup
+```bash
+cd backend
+npm install
+cp .env.example .env  # Configure environment variables
+npm run dev
+```
 
-### Frontend
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## Environment Variables
+### Environment Variables
 
-### Backend
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Server port | 5000 |
-| NODE_ENV | Environment | development |
-| MONGO_URI | MongoDB connection string | - |
-| JWT_SECRET | JWT signing secret | - |
-| JWT_EXPIRES_IN | JWT expiration | 7d |
-| CORS_ORIGIN | Allowed CORS origin | http://localhost:5173 |
+#### Backend (.env)
+```
+PORT=5000
+NODE_ENV=development
+MONGO_URI=mongodb://localhost:27017/taskmanager
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=7d
+CORS_ORIGIN=http://localhost:5173
+```
 
-### Frontend
-| Variable | Description | Default |
-|----------|-------------|---------|
-| VITE_API_URL | Backend API URL | http://localhost:5000 |
-| VITE_SOCKET_URL | Socket.io URL | http://localhost:5000 |
+#### Frontend (.env)
+```
+VITE_API_URL=http://localhost:5000
+VITE_SOCKET_URL=http://localhost:5000
+```
+
+## Deployment
+
+### Backend (Render)
+- Build Command: `npm install --include=dev && tsc`
+- Start Command: `npm start`
+- Environment variables configured in Render dashboard
+
+### Frontend (Vercel)
+- Framework: Vite
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment variables configured in Vercel dashboard
+
+## Submission Checklist
+
+- [x] User authentication (register/login)
+- [x] Task CRUD operations
+- [x] Real-time updates with Socket.io
+- [x] Dashboard with statistics
+- [x] Task filtering and sorting
+- [x] Kanban board view
+- [x] Drag-and-drop status changes
+- [x] Real-time notifications
+- [x] Responsive design
+- [x] TypeScript throughout
+- [x] Proper error handling
+- [x] Clean code architecture
+- [x] Deployed and accessible
