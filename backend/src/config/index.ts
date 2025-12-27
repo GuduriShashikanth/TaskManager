@@ -8,7 +8,7 @@ export const config = {
   mongoUri: process.env.MONGO_URI || "",
   jwtSecret: process.env.JWT_SECRET || "",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  corsOrigin: process.env.CORS_ORIGIN || "https://task-manager-beta-seven-73.vercel.app" || "https://task-manager-shashis-projects-637872b6.vercel.app",
+  corsOrigin: process.env.CORS_ORIGIN || "https://trackifyyy.netlify.app" || "https://task-manager-beta-seven-73.vercel.app" || "https://task-manager-shashis-projects-637872b6.vercel.app",
 };
 
 // Validate required environment variables
