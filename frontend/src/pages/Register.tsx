@@ -60,7 +60,7 @@ export default function Register({ onSwitch }: RegisterProps) {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Create account</h1>
-            <p className="text-gray-600 mt-1">Get started with TaskFlow</p>
+            <p className="text-gray-600 mt-1">Get started with CoTaskify</p>
           </div>
 
           {error && (

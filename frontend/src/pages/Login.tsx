@@ -59,7 +59,7 @@ export default function Login({ onSwitch }: LoginProps) {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-            <p className="text-gray-600 mt-1">Sign in to TaskFlow</p>
+            <p className="text-gray-600 mt-1">Sign in to CoTaskify</p>
           </div>
 
           {error && (
