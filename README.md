@@ -4,7 +4,7 @@ A full-stack real-time task management application built with React, Node.js, Ex
 
 ## Live Demo
 
-- **Frontend**: https://task-manager-beta-seven-73.vercel.app/
+- **Frontend**: https://task-manager-beta-seven-73.vercel.app, https://cotask.netlify.app
 - **Backend API**: https://taskmanager-ddip.onrender.com
 
 ## Features
@@ -146,7 +146,7 @@ NODE_ENV=development
 MONGO_URI=mongodb://localhost:27017/taskmanager
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=http://localhost:5173 || https://cotask.netlify.app ||https://task-manager-beta-seven-73.vercel.app
 ```
 
 #### Frontend (.env)
